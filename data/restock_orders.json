@@ -1,0 +1,14 @@
+{
+    "restock_orders": [
+        {
+            "order_id": "D741E643",
+            "timestamp": "2026-04-07 10:59:53",
+            "product_id": "P005",
+            "product_name": "Face Mask",
+            "current_stock": 5,
+            "reorder_quantity": 100,
+            "status": "PLACED",
+            "supplier": "Aura Central Warehouse"
+        }
+    ]
+}

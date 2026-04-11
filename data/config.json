@@ -1,0 +1,12 @@
+{
+    "kiosk_id": "AURA-001",
+    "kiosk_name": "Aura Kiosk Alpha",
+    "kiosk_type": "GeneralKiosk",
+    "location": "Metro Station Central",
+    "city": "Ahmedabad",
+    "current_mode": "Emergency Lockdown",
+    "current_pricing": "Standard",
+    "emergency_purchase_limit": 2,
+    "low_stock_threshold": 10,
+    "version": "2.0"
+}
