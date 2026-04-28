@@ -1,0 +1,34 @@
+{
+    "products": [
+        {
+            "id": "P001",
+            "name": "Paracetamol",
+            "base_price": 5.0,
+            "quantity": 50,
+            "category": "medicine",
+            "essential": true,
+            "icon": "\ud83d\udc8a",
+            "description": "Pain relief medication"
+        },
+        {
+            "id": "P004",
+            "name": "First Aid Kit",
+            "base_price": 15.0,
+            "quantity": 20,
+            "category": "medical",
+            "essential": true,
+            "icon": "\ud83e\ude79",
+            "description": "Basic emergency first aid"
+        },
+        {
+            "id": "P005",
+            "name": "Face Mask",
+            "base_price": 4.0,
+            "quantity": 8,
+            "category": "safety",
+            "essential": true,
+            "icon": "\ud83d\ude37",
+            "description": "N95 protective mask"
+        }
+    ]
+}

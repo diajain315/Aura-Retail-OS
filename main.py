@@ -1,49 +1,78 @@
+# Pattern: Factory pattern
 import sys
 import os
+import tkinter as tk
 
+# Ensure project root is on the path
 sys.path.insert(0, os.path.dirname(__file__))
 
+from core.central_registry import CentralRegistry
+from core.kiosk_factory import GeneralKioskFactory, PharmacyKioskFactory, EmergencyReliefKioskFactory
+from core.kiosk_interface import KioskInterface
+from events.event_system import EventBus
+from events.subscribers import MaintenanceService, SupplyChainSystem, CityMonitoringCenter
 from persistence.data_manager import DataManager
-from gui.login import LoginWindow
-
+from gui.app import AuraRetailOSApp
+from gui.kiosk_selection import KioskSelectionScreen
 
 def main():
-    # ── Step 1: Login ─────────────────────────────────────────────────────
-    # Skip login screen, default to user directly
-    user = {"name": "Customer", "role": "user", "username": "guest"}
+    
+    root = tk.Tk()
+    selection_screen = KioskSelectionScreen(root)
+    root.mainloop()
+    root.destroy()
+    
+    kiosk_type = selection_screen.get_selected_kiosk()
+    
+    if not kiosk_type:
+        return  # User closed without selecting
+    
+    
+    config = DataManager.load_config()
+    products = DataManager.load_inventory_for_kiosk(kiosk_type)
 
-    # ── Step 2: Load persisted data ───────────────────────────────────────
-    config   = DataManager.load_config()
-    products = DataManager.load_inventory() 
-
-    # ── Step 3: Singleton registry ────────────────────────────────────────
-    from core.central_registry import CentralRegistry
+    
     registry = CentralRegistry()
     registry.initialize(config)
 
-    # ── Step 4: Build kiosk ───────────────────────────────────────────────
-    from core.kiosk import Kiosk
-    from inventory.inventory_manager import InventoryManager
-    from strategy.standard_pricing import StandardPricing
+    
+    event_bus = EventBus()
 
-    kiosk = Kiosk(
-        kiosk_id="AURA-GEN-001",
-        name="Aura Retail Prototype",
-        location="Central Plaza",
-        inventory_manager=InventoryManager(products),
-        initial_pricing_strategy=StandardPricing()
+    
+    #    GUI callbacks will be registered after app creation
+    maintenance_svc = MaintenanceService(event_bus)
+    supply_chain    = SupplyChainSystem(event_bus)
+    city_monitor    = CityMonitoringCenter(event_bus)
+
+    
+    if kiosk_type == "food":
+        factory = GeneralKioskFactory()
+    elif kiosk_type == "pharmacy":
+        factory = PharmacyKioskFactory()
+    elif kiosk_type == "emergency":
+        factory = EmergencyReliefKioskFactory()
+    else:
+        factory = GeneralKioskFactory()
+    
+    kiosk = factory.create_kiosk(products, event_bus)
+
+    
+    ki = KioskInterface(
+        kiosk,
+        registry,
+        data_manager=DataManager,
+        kiosk_type=kiosk_type,
     )
 
-    # ── Step 5: ────────────────────────────────────────────────────
-    from core.kiosk_interface import KioskInterface
-    ki = KioskInterface(kiosk, registry, data_manager=DataManager)
+    
+    app = AuraRetailOSApp(ki, registry)
 
-    # ── Step 6: Launch GUI (pass authenticated user) ──────────────────────
-    from gui.app import AuraRetailOSApp
-    app = AuraRetailOSApp(ki, registry, user=user)
+    # Wire subscriber GUI callbacks after app is created
+    maintenance_svc.gui_callback = app._log
+    supply_chain.gui_callback    = app._log
+    city_monitor.gui_callback    = app._log
 
     app.run()
-
 
 if __name__ == "__main__":
     main()

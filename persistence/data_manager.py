@@ -3,7 +3,6 @@ import os
 from typing import Any
 
 class DataManager:
-    """Reads and writes JSON data files for system state persistence."""
 
     BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
@@ -35,6 +34,48 @@ class DataManager:
         cls.save("inventory.json", {"products": products})
 
     @classmethod
+    def _inventory_filename_for_kiosk(cls, kiosk_type: str) -> str:
+        return f"inventory_{kiosk_type}.json"
+
+    @classmethod
+    def _default_products_for_kiosk(cls, kiosk_type: str, all_products: list) -> list:
+
+        if kiosk_type == "pharmacy":
+            allowed = {"medicine", "medical", "safety", "health"}
+            subset = [p for p in all_products if p.get("category") in allowed]
+            return subset or all_products
+
+        if kiosk_type == "food":
+            allowed = {"food", "beverage", "electronics"}
+            subset = [p for p in all_products if p.get("category") in allowed]
+            return subset or all_products
+
+        if kiosk_type == "emergency":
+            subset = [p for p in all_products if p.get("essential", False) or p.get("category") in {"safety", "medical"}]
+            return subset or all_products
+
+        return all_products
+
+    @classmethod
+    def load_inventory_for_kiosk(cls, kiosk_type: str) -> list:
+
+        filename = cls._inventory_filename_for_kiosk(kiosk_type)
+        data = cls.load(filename)
+        products = data.get("products", []) if isinstance(data, dict) else []
+        if products:
+            return products
+
+        all_products = cls.load_inventory()
+        defaults = cls._default_products_for_kiosk(kiosk_type, all_products)
+        cls.save(filename, {"products": defaults})
+        return defaults
+
+    @classmethod
+    def save_inventory_for_kiosk(cls, kiosk_type: str, products: list) -> None:
+        filename = cls._inventory_filename_for_kiosk(kiosk_type)
+        cls.save(filename, {"products": products})
+
+    @classmethod
     def load_config(cls) -> dict:
         return cls.load("config.json")
 
@@ -53,30 +94,3 @@ class DataManager:
         data["total_revenue"] = round(data.get("total_revenue", 0) + txn.get("total_amount", 0), 2)
         data["total_items_sold"] = data.get("total_items_sold", 0) + txn.get("quantity", 0)
         cls.save("transactions.json", data)
-
-    @classmethod
-    def load_users(cls) -> list:
-        data = cls.load("users.json")
-        return data.get("users", [])
-
-    @classmethod
-    def verify_user(cls, username: str, password_hash: str) -> dict:
-        """Return user dict if credentials match, else None."""
-        for user in cls.load_users():
-            if user["username"] == username and user["password"] == password_hash:
-                return user
-        return None
-
-    # ── Restock Orders ────────────────────────────────────────────────────
-
-    @classmethod
-    def load_restock_orders(cls) -> list:
-        data = cls.load("restock_orders.json")
-        return data.get("restock_orders", [])
-
-    @classmethod
-    def save_restock_order(cls, order: dict) -> None:
-        """Append a new restock/reorder request to restock_orders.json."""
-        data = cls.load("restock_orders.json")
-        data.setdefault("restock_orders", []).append(order)
-        cls.save("restock_orders.json", data)

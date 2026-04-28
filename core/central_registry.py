@@ -1,3 +1,4 @@
+# Pattern: Singleton
 class CentralRegistry:
 
     _instance = None
@@ -41,5 +42,4 @@ class CentralRegistry:
 
     @classmethod
     def reset(cls):
-        """For testing: destroy the singleton instance."""
         cls._instance = None

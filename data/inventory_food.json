@@ -1,0 +1,43 @@
+{
+    "products": [
+        {
+            "id": "P002",
+            "name": "Water Bottle",
+            "base_price": 2.0,
+            "quantity": 98,
+            "category": "food",
+            "essential": true,
+            "icon": "\ud83d\udca7",
+            "description": "1L mineral water"
+        },
+        {
+            "id": "P003",
+            "name": "Energy Bar",
+            "base_price": 5.0,
+            "quantity": 23,
+            "category": "food",
+            "essential": false,
+            "icon": "\ud83c\udf6b",
+            "description": "High energy nutrition bar"
+        },
+        {
+            "id": "P006",
+            "name": "USB Charger",
+            "base_price": 25.0,
+            "quantity": 13,
+            "category": "electronics",
+            "essential": false,
+            "icon": "\ud83d\udd0c",
+            "description": "Universal USB-C charger"
+        },
+        {
+            "id": "6",
+            "name": "Bread",
+            "description": "Bread",
+            "icon": "aa",
+            "base_price": 50.0,
+            "quantity": 49,
+            "essential": true
+        }
+    ]
+}

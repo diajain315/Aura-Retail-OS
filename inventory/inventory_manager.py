@@ -22,7 +22,6 @@ class InventoryManager:
         return list(self._products.values())
 
     def get_available_stock(self, product_id: str) -> int:
-        """Derived attribute: available = total - reserved (0 if hw fault)."""
         if self._hw_unavailable.get(product_id, False):
             return 0
         p = self._products.get(product_id)
@@ -36,18 +35,17 @@ class InventoryManager:
     # ── Write ──────────────────────────────────────────────────────────────
 
     def reserve(self, product_id: str, quantity: int) -> bool:
-        """Temporarily hold stock during an active transaction."""
         if self.get_available_stock(product_id) >= quantity:
             self._reserved[product_id] = self._reserved.get(product_id, 0) + quantity
             return True
         return False
 
     def release(self, product_id: str, quantity: int) -> None:
-        """Release reserved stock (transaction cancelled or failed)."""
+
         self._reserved[product_id] = max(0, self._reserved.get(product_id, 0) - quantity)
 
     def deduct(self, product_id: str, quantity: int) -> bool:
-        """Commit stock deduction after a successful purchase."""
+
         p = self._products.get(product_id)
         if not p:
             return False
@@ -68,11 +66,37 @@ class InventoryManager:
     # ── Snapshot (Memento support) ─────────────────────────────────────────
 
     def get_snapshot(self) -> Dict[str, int]:
-        """Capture current stock levels for potential rollback."""
+
         return {pid: p["quantity"] for pid, p in self._products.items()}
 
     def restore_snapshot(self, snapshot: Dict[str, int]) -> None:
-        """Restore stock from a previously captured snapshot."""
+
         for pid, qty in snapshot.items():
             if pid in self._products:
                 self._products[pid]["quantity"] = qty
+
+    def add_product(self, product: dict) -> bool:
+
+        if product["id"] in self._products:
+            return False  # Product already exists
+        self._products[product["id"]] = product.copy()
+        self._reserved[product["id"]] = 0
+        self._hw_unavailable[product["id"]] = False
+        return True
+
+    def remove_product(self, product_id: str) -> bool:
+
+        if product_id not in self._products:
+            return False
+        del self._products[product_id]
+        del self._reserved[product_id]
+        del self._hw_unavailable[product_id]
+        return True
+
+    def add_stock(self, product_id: str, quantity: int) -> bool:
+
+        p = self._products.get(product_id)
+        if not p:
+            return False
+        p["quantity"] += quantity
+        return True

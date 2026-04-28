@@ -1,64 +1,10 @@
 {
     "products": [
-        {
-            "id": "P001",
-            "name": "Paracetamol",
-            "base_price": 5.0,
-            "quantity": 147,
-            "category": "medicine",
-            "essential": true,
-            "icon": "\ud83d\udc8a",
-            "description": "Pain relief medication"
-        },
-        {
-            "id": "P002",
-            "name": "Water Bottle",
-            "base_price": 2.0,
-            "quantity": 170,
-            "category": "food",
-            "essential": true,
-            "icon": "\ud83d\udca7",
-            "description": "1L mineral water"
-        },
-        {
-            "id": "P003",
-            "name": "Energy Bar",
-            "base_price": 3.5,
-            "quantity": 127,
-            "category": "food",
-            "essential": false,
-            "icon": "\ud83c\udf6b",
-            "description": "High energy nutrition bar"
-        },
-        {
-            "id": "P004",
-            "name": "First Aid Kit",
-            "base_price": 15.0,
-            "quantity": 113,
-            "category": "medical",
-            "essential": true,
-            "icon": "\ud83e\ude79",
-            "description": "Basic emergency first aid"
-        },
-        {
-            "id": "P005",
-            "name": "Face Mask",
-            "base_price": 4.0,
-            "quantity": 105,
-            "category": "safety",
-            "essential": true,
-            "icon": "\ud83d\ude37",
-            "description": "N95 protective mask"
-        },
-        {
-            "id": "P006",
-            "name": "USB Charger",
-            "base_price": 25.0,
-            "quantity": 114,
-            "category": "electronics",
-            "essential": false,
-            "icon": "\ud83d\udd0c",
-            "description": "Universal USB-C charger"
-        }
+        {"id": "P001", "name": "Paracetamol", "base_price": 5.0, "quantity": 50, "category": "medicine", "essential": true, "icon": "💊", "description": "Pain relief medication"},
+        {"id": "P002", "name": "Water Bottle", "base_price": 2.0, "quantity": 100, "category": "food", "essential": true, "icon": "💧", "description": "1L mineral water"},
+        {"id": "P003", "name": "Energy Bar", "base_price": 3.5, "quantity": 30, "category": "food", "essential": false, "icon": "🍫", "description": "High energy nutrition bar"},
+        {"id": "P004", "name": "First Aid Kit", "base_price": 15.0, "quantity": 20, "category": "medical", "essential": true, "icon": "🩹", "description": "Basic emergency first aid"},
+        {"id": "P005", "name": "Face Mask", "base_price": 4.0, "quantity": 8, "category": "safety", "essential": true, "icon": "😷", "description": "N95 protective mask"},
+        {"id": "P006", "name": "USB Charger", "base_price": 25.0, "quantity": 15, "category": "electronics", "essential": false, "icon": "🔌", "description": "Universal USB-C charger"}
     ]
 }
